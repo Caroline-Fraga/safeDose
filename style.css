@@ -1,0 +1,573 @@
+/* ================================ */
+/* 1. VARIÁVEIS & BASE        */
+/* ================================ */
+
+/* Definição de variáveis CSS para cores, sombras, etc. */
+:root {
+    --bg-color: #f8fafd;
+    --panel-bg: #ffffff;
+    --text-color: #3f4a56;
+    --input-bg: #f0f4f7;
+    --input-color: #495057;
+    --border-color: #e0e6ec;
+    --shadow-light: rgba(0, 0, 0, 0.05);
+    --shadow-medium: rgba(0, 0, 0, 0.08);
+
+    --primary-blue-light: #4a90e2;
+    --primary-blue-dark: #0056b3;
+    --header-footer-gradient: linear-gradient(to right, #4a90e2, #2e7ad7);
+
+    --result-success: #5cb85c;
+    --alert-warning: #f0ad4e;
+    --alert-error: #dc3545;
+}
+
+/* Estilos de reset e base para o corpo da página */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden; /* Previne rolagem horizontal */
+}
+
+body {
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.hidden {
+    display: none;
+}
+
+/* ================================ */
+/* 2. LAYOUT PRINCIPAL         */
+/* ================================ */
+
+/* Cabeçalho da aplicação */
+.app-header {
+    background: var(--header-footer-gradient);
+    width: 100%;
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px var(--shadow-medium);
+    color: white;
+    flex-shrink: 0;
+}
+
+.app-header .logo {
+    font-size: 2.5rem;
+    color: white;
+    margin-right: 1rem;
+}
+
+.app-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.app-subtitle {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 400;
+}
+
+/* Container principal com layout em grid */
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1300px;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+/* Estilos dos painéis (Novo Cálculo, Resultado, Histórico) */
+.panel {
+    background-color: var(--panel-bg);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px var(--shadow-medium);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+/* Estilos da barra de rolagem personalizada */
+.panel::-webkit-scrollbar {
+    width: 8px;
+}
+.panel::-webkit-scrollbar-track {
+    background: var(--input-bg);
+    border-radius: 10px;
+}
+.panel::-webkit-scrollbar-thumb {
+    background: var(--primary-blue-light);
+    border-radius: 10px;
+}
+.panel::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-blue-dark);
+}
+
+.panel-title {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--primary-blue-dark);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+/* Rodapé da aplicação */
+.app-footer {
+    width: 100%;
+    background: var(--header-footer-gradient);
+    color: rgba(255, 255, 255, 0.85);
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    box-shadow: 0 -2px 8px var(--shadow-medium);
+    flex-shrink: 0;
+}
+
+/* ================================ */
+/* 3. COMPONENTES DIVERSOS     */
+/* ================================ */
+
+/* Estilos de formulário e inputs */
+.new-calculation form {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+}
+
+.form-group label {
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+    background-color: var(--input-bg);
+    color: var(--input-color);
+    border: 1px solid var(--border-color);
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--primary-blue-light);
+    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.4);
+    outline: none;
+}
+
+.input-with-units {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.input-with-units input {
+    flex-grow: 2;
+    flex-basis: 0;
+    margin-right: 0;
+}
+
+.unit-group {
+    position: relative;
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 80px;
+}
+
+.unit-group select {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 9px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    min-width: 100%;
+    text-align: center;
+    padding-right: 35px;
+}
+
+.unit-group select option {
+    background-color: var(--panel-bg);
+    color: var(--text-color);
+}
+
+/* Seta personalizada para o select */
+.unit-group::after {
+    content: "\f078";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-color);
+    pointer-events: none;
+    font-size: 0.9em;
+}
+
+/* Botão de cálculo */
+.calculate-btn {
+    background: var(--primary-blue-light);
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: auto;
+    transition: background 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 10px rgba(74, 144, 226, 0.3);
+}
+
+.calculate-btn:hover {
+    background: var(--primary-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(46, 122, 215, 0.4);
+}
+
+.calculate-btn:active {
+    transform: translateY(0);
+    box-shadow: 2px 5px rgba(46, 122, 215, 0.2);
+}
+
+/* Estilos da caixa de resultado */
+.result-box {
+    text-align: center;
+    padding: 40px 10px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.result-box .fas {
+    font-size: 3.8rem;
+    margin-bottom: 15px;
+}
+
+.result-box .fa-check-circle { color: var(--result-success); }
+.result-box .initial-icon, .result-box .fa-info-circle { color: #9da9b7; }
+.result-box .fa-exclamation-circle { color: var(--alert-error); }
+
+.result-box .initial-message {
+    font-size: 1.1rem;
+    color: #7b8a9b;
+}
+
+.result-box .result-text {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.result-box .safety-message {
+    font-size: 0.95rem;
+    color: #7b8a9b;
+}
+
+/* Estilos da caixa de alerta de segurança */
+.safety-alert-box {
+    padding: 15px;
+    margin-top: 25px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 5px var(--shadow-light);
+    flex-shrink: 0;
+}
+
+.safety-alert-box.success {
+    background-color: #f1f8e9;
+    border: 1px solid var(--result-success);
+    color: var(--result-success);
+}
+
+.safety-alert-box.warning {
+    background-color: #fff9e6;
+    border: 1px solid var(--alert-warning);
+    color: #8a6d3b;
+}
+
+.safety-alert-box.error {
+    background-color: #fbe9eb;
+    border: 1px solid var(--alert-error);
+    color: var(--alert-error);
+}
+
+.safety-alert-box .fas {
+    font-size: 1.5rem;
+    margin-right: 12px;
+}
+
+.safety-alert-box #safety-alert-message {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.error-message {
+    color: var(--alert-error);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 5px;
+    min-height: 1.2em;
+}
+
+/* Estilos dos itens do histórico */
+#history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+.empty-history-message {
+    text-align: center;
+    color: #9da9b7;
+    font-style: italic;
+    padding: 20px;
+}
+
+.history-item {
+    background-color: var(--input-bg);
+    padding: 12px 18px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.88rem;
+    box-shadow: 0 1px 5px var(--shadow-light);
+    transition: transform 0.1s ease, background-color 0.2s ease;
+    flex-shrink: 0;
+}
+
+.history-item:hover {
+    transform: translateY(-2px);
+    background-color: #e0e6ec;
+}
+
+.history-item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    color: var(--text-color);
+}
+
+.history-item-details strong {
+    font-weight: 700;
+    color: var(--primary-blue-dark);
+    font-size: 0.95rem;
+}
+
+.history-item .delete-btn {
+    color: var(--alert-error);
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-left: 15px;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.history-item .delete-btn:hover {
+    transform: scale(1.2);
+    color: #cc0000;
+}
+
+/* ================================ */
+/* 4. MODAL DE CONFIRMAÇÃO     */
+/* ================================ */
+
+/* Fundo escurecido da modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+}
+
+.modal-overlay.hidden {
+    display: none;
+    opacity: 0;
+}
+
+/* Conteúdo central da modal */
+.modal-content {
+    background-color: var(--panel-bg);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px var(--shadow-medium);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.hidden .modal-content {
+    transform: translateY(-20px);
+}
+
+.modal-icon {
+    color: var(--alert-error);
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.modal-message {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 25px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.modal-btn {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.confirm-btn {
+    background-color: var(--alert-error);
+    color: white;
+}
+
+.confirm-btn:hover {
+    background-color: #cc0000;
+    transform: translateY(-2px);
+}
+
+.cancel-btn {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.cancel-btn:hover {
+    background-color: #e0e6ec;
+    transform: translateY(-2px);
+}
+
+/* ================================ */
+/* 5. RESPONSIVIDADE          */
+/* ================================ */
+
+/* Estilos para telas médias (tablets) */
+@media (max-width: 992px) {
+    .container {
+        grid-template-columns: 1fr;
+        padding: 15px;
+        gap: 15px;
+    }
+    .app-header, .app-footer {
+        padding: 1rem 1.5rem;
+    }
+    .app-title { font-size: 1.4rem; }
+    .app-subtitle { font-size: 0.8rem; }
+    .panel { padding: 20px; }
+    .result-box {
+        padding: 30px 10px;
+        min-height: auto;
+    }
+    .result-box .fas { font-size: 3rem; }
+    .result-box .result-text { font-size: 1.8rem; }
+    .safety-alert-box {
+        padding: 12px;
+        margin-top: 15px;
+    }
+    .safety-alert-box #safety-alert-message { font-size: 0.9rem; }
+}
+
+/* Estilos para telas pequenas (smartphones) */
+@media (max-width: 576px) {
+    .app-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+    .app-header .logo {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    .app-title { font-size: 1.3rem; }
+    .app-subtitle { font-size: 0.75rem; }
+    .container {
+        padding: 10px;
+        gap: 10px;
+    }
+    .panel { padding: 15px; }
+    .form-group input, .form-group select, .calculate-btn {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+    .unit-group select {
+        padding: 10px 12px;
+        min-width: 60px;
+    }
+    .result-box .fas { font-size: 2.5rem; }
+    .result-box .result-text { font-size: 1.5rem; }
+    .safety-alert-box { font-size: 0.85rem; }
+    .safety-alert-box .fas { font-size: 1.2rem; }
+    .history-item {
+        padding: 10px 15px;
+        font-size: 0.8rem;
+    }
+    .history-item-details strong { font-size: 0.85rem; }
+    .history-item .delete-btn { font-size: 1rem; }
+}

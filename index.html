@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Dosagem</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <i class="fas fa-heartbeat logo"></i>
+        <div>
+            <h1 class="app-title">SafeDose</h1>
+            <p class="app-subtitle">Ferramenta de apoio para profissionais de saúde</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="panel new-calculation">
+            <h2 class="panel-title">NOVO CÁLCULO</h2>
+            <form id="dosage-form">
+
+                <div class="form-group">
+                    <label for="medication-name">Nome do Medicamento</label>
+                    <select id="medication-name">
+                        <option value="">Selecione...</option>
+                        <option value="Dipirona">Dipirona</option>
+                        <option value="Paracetamol">Paracetamol</option>
+                        <option value="Morfina">Morfina</option>
+                    </select>
+                    <span class="error-message" id="medication-error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Dosagem Prescrita</label>
+                    <div class="input-with-units">
+                        <input type="number" id="prescribed-dosage" placeholder="0" step="0.001" min="0">
+                        <div class="unit-group">
+                            <select id="prescribed-unit">
+                                <option value="mg">mg</option>
+                                <option value="mcg">mcg</option>
+                                <option value="g">g</option>
+                            </select>
+                        </div>
+                    </div>
+                    <span class="error-message" id="prescribed-dosage-error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>Concentração Disponível</label>
+                    <div class="input-with-units">
+                        <input type="number" id="available-concentration" placeholder="0" step="0.001" min="0">
+                        <div class="unit-group">
+                            <select id="available-unit">
+                                <option value="mg/ml">mg/ml</option>
+                                <option value="mcg/ml">mcg/ml</option>
+                                <option value="g/ml">g/ml</option>
+                            </select>
+                        </div>
+                    </div>
+                    <span class="error-message" id="available-concentration-error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="pharmaceutical-form">Forma Farmacêutica</label>
+                    <select id="pharmaceutical-form">
+                        <option value="">Selecione...</option>
+                        <option value="Líquido">Líquido</option>
+                        <option value="Comprimido">Comprimido</option>
+                        <option value="Injeção">Injeção</option>
+                    </select>
+                    <span class="error-message" id="form-error-message"></span>
+                </div>
+
+                <button type="submit" class="calculate-btn">CALCULAR</button>
+            </form>
+        </section>
+
+        <section class="panel result">
+            <h2 class="panel-title">RESULTADO</h2>
+            <div id="result-content" class="result-box">
+                <i class="fas fa-info-circle initial-icon"></i>
+                <div class="initial-message">Preencha os dados para calcular a dosagem.</div>
+            </div>
+        </section>
+
+        <section class="panel history">
+            <h2 class="panel-title">HISTÓRICO</h2>
+            <div id="history-list">
+                <div class="empty-history-message">Nenhum cálculo no histórico.</div>
+            </div>
+        </section>
+    </main>
+
+    <div id="custom-confirm-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-icon"><i class="fas fa-trash-alt"></i></div>
+            <div class="modal-message">Tem certeza de que deseja excluir este cálculo do histórico?</div>
+            <div class="modal-actions">
+                <button id="modal-confirm-btn" class="modal-btn confirm-btn">Sim</button>
+                <button id="modal-cancel-btn" class="modal-btn cancel-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        © 2025 SafeDose - Desenvolvido para auxiliar no cálculo de dosagens.
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
