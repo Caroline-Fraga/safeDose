@@ -177,19 +177,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Função para validar a entrada de números em tempo real
     function validarApenasNumeros(event) {
-        const key = event.key;
-        // Permite números, vírgula, ponto e teclas de controle como Backspace e Seta
-        if (!(/[0-9,\.]/.test(key)) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight') {
-            event.preventDefault();
-        }
+        const input = event.target;
+        // Usa uma expressão regular para manter apenas dígitos, pontos e vírgulas
+        input.value = input.value.replace(/[^0-9,.]/g, '');
     }
 
     // Adiciona o manipulador de eventos aos campos de dosagem e concentração
     const prescribedDosageInput = document.getElementById('prescribed-dosage');
     const availableConcentrationInput = document.getElementById('available-concentration');
 
-    prescribedDosageInput.addEventListener('keypress', validarApenasNumeros);
-    availableConcentrationInput.addEventListener('keypress', validarApenasNumeros);
+    prescribedDosageInput.addEventListener('input', validarApenasNumeros);
+    availableConcentrationInput.addEventListener('input', validarApenasNumeros);
 
     // Limpa mensagens de erro ao interagir com os campos
     document.getElementById('medication-name').addEventListener('change', () => medicationError.textContent = '');
