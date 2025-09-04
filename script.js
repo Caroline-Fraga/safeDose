@@ -11,7 +11,7 @@ class SafeDoseSystem {
             'mg': 1,
             'mcg': 0.001,
             'ml': 1,
-            'ui': 1,
+            'L': 1000,
         };
         // Carrega o histórico do armazenamento local, se existir
         this.historico = JSON.parse(localStorage.getItem('dosageHistory')) || [];
@@ -30,15 +30,18 @@ class SafeDoseSystem {
     }
 
     // Executa o cálculo da dosagem
-    calcularDosagem(prescricaoValor, prescricaoUnidade, disponivelValor, forma, medicamento) {
+    calcularDosagem(prescricaoValor, prescricaoUnidade, disponivelMassa, disponivelMassaUnidade, disponivelVolume, disponivelVolumeUnidade, forma, medicamento) {
         try {
             const prescricaoMg = this.converterParaMg(prescricaoValor, prescricaoUnidade);
+            const massaDisponivelMg = this.converterParaMg(disponivelMassa, disponivelMassaUnidade);
+            const volumeDisponivelMl = this.conversoes[disponivelVolumeUnidade.toLowerCase()] ? disponivelVolume * this.conversoes[disponivelVolumeUnidade.toLowerCase()] : disponivelVolume;
 
-            if (disponivelValor <= 0) {
-                return { resultado: "Erro: Concentração disponível não pode ser zero.", sucesso: false };
+            if (massaDisponivelMg <= 0 || volumeDisponivelMl <= 0) {
+                return { resultado: "Erro: Valores de massa ou volume disponíveis não podem ser zero.", sucesso: false };
             }
 
-            let quantidade = prescricaoMg / disponivelValor;
+            const concentracao = massaDisponivelMg / volumeDisponivelMl;
+            let quantidade = prescricaoMg / concentracao;
             let resultadoTexto;
 
             const formaLowerCase = forma.toLowerCase();
@@ -78,14 +81,16 @@ class SafeDoseSystem {
     }
 
     // Adiciona um novo cálculo ao histórico
-    adicionarHistorico(medicamento, prescricaoValor, prescricaoUnidade, disponivelValor, disponivelUnidade, forma, resultado, alerta) {
+    adicionarHistorico(medicamento, prescricaoValor, prescricaoUnidade, disponivelMassa, disponivelMassaUnidade, disponivelVolume, disponivelVolumeUnidade, forma, resultado, alerta) {
         this.historico.unshift({
             id: Date.now(),
             medicamento: medicamento,
             prescricaoValor: prescricaoValor,
             prescricaoUnidade: prescricaoUnidade,
-            disponivelValor: disponivelValor,
-            disponivelUnidade: disponivelUnidade,
+            disponivelMassa: disponivelMassa,
+            disponivelMassaUnidade: disponivelMassaUnidade,
+            disponivelVolume: disponivelVolume,
+            disponivelVolumeUnidade: disponivelVolumeUnidade,
             forma: forma,
             resultado: resultado,
             alerta: alerta,
@@ -136,13 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Variável para armazenar o ID do item a ser excluído
     let itemIdToDelete = null;
 
-    // Mapeamento para conversão de unidades de concentração
-    const concentracaoParaUnidade = {
-        'mg/ml': 'mg',
-        'mcg/ml': 'mcg',
-        'g/ml': 'g'
-    };
-
     // Função para renderizar o histórico na interface
     function renderizarHistorico() {
         historyList.innerHTML = ''; // Limpa a lista antes de renderizar
@@ -159,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="history-item-details">
                     <strong>Medicamento: ${item.medicamento}</strong>
                     <small>Dosagem Prescrita: ${item.prescricaoValor} ${item.prescricaoUnidade}</small>
-                    <small>Concentração Disponível: ${item.disponivelValor} ${item.disponivelUnidade} (${item.forma})</small>
+                    <small>Concentração Disponível: ${item.disponivelMassa} ${item.disponivelMassaUnidade} / ${item.disponivelVolume} ${item.disponivelVolumeUnidade} (${item.forma})</small>
                     <span>${item.resultado}</span>
                 </div>
                 <i class="fas fa-trash-alt delete-btn" title="Excluir"></i>
@@ -184,20 +182,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Adiciona o manipulador de eventos aos campos de dosagem e concentração
     const prescribedDosageInput = document.getElementById('prescribed-dosage');
-    const availableConcentrationInput = document.getElementById('available-concentration');
+    const availableMassInput = document.getElementById('available-mass');
+    const availableVolumeInput = document.getElementById('available-volume');
 
     prescribedDosageInput.addEventListener('input', validarApenasNumeros);
-    availableConcentrationInput.addEventListener('input', validarApenasNumeros);
+    availableMassInput.addEventListener('input', validarApenasNumeros);
+    availableVolumeInput.addEventListener('input', validarApenasNumeros);
 
     // Limpa mensagens de erro ao interagir com os campos
     document.getElementById('medication-name').addEventListener('change', () => medicationError.textContent = '');
     document.getElementById('pharmaceutical-form').addEventListener('change', () => formError.textContent = '');
+    document.getElementById('available-mass').addEventListener('input', () => availableConcentrationError.textContent = '');
+    document.getElementById('available-volume').addEventListener('input', () => availableConcentrationError.textContent = '');
 
     // Função para limpar os campos do formulário
     function limparCampos() {
         document.getElementById('medication-name').selectedIndex = 0;
         document.getElementById('prescribed-dosage').value = '';
-        document.getElementById('available-concentration').value = '';
+        document.getElementById('available-mass').value = '';
+        document.getElementById('available-volume').value = '';
         document.getElementById('pharmaceutical-form').selectedIndex = 0;
     }
 
@@ -213,14 +216,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const medicamento = document.getElementById('medication-name').value;
         const prescribedDosageValue = prescribedDosageInput.value;
-        const availableConcentrationValue = availableConcentrationInput.value;
+        const availableMassValue = availableMassInput.value;
+        const availableVolumeValue = availableVolumeInput.value;
 
         // Converte os valores para números após substituir a vírgula por ponto
         const prescricaoValor = parseFloat(prescribedDosageValue.replace(',', '.'));
-        const disponivelValor = parseFloat(availableConcentrationValue.replace(',', '.'));
+        const disponivelMassa = parseFloat(availableMassValue.replace(',', '.'));
+        const disponivelVolume = parseFloat(availableVolumeValue.replace(',', '.'));
+
 
         const prescricaoUnidade = document.getElementById('prescribed-unit').value;
-        const disponivelUnidadeConcentracao = document.getElementById('available-unit').value;
+        const disponivelMassaUnidade = document.getElementById('available-mass-unit').value;
+        const disponivelVolumeUnidade = document.getElementById('available-volume-unit').value;
         const forma = document.getElementById('pharmaceutical-form').value;
 
         let temErro = false;
@@ -231,13 +238,16 @@ document.addEventListener('DOMContentLoaded', () => {
             temErro = true;
         }
         if (isNaN(prescricaoValor) || prescricaoValor <= 0) {
-            prescribedDosageError.textContent = 'Insira um valor numérico válido (maior que 0).';
+            prescribedDosageError.textContent = 'Insira um valor numérico válido para a dosagem (maior que 0).';
             temErro = true;
         }
-        if (isNaN(disponivelValor) || disponivelValor <= 0) {
-            availableConcentrationError.textContent = 'Insira um valor numérico válido (maior que 0).';
+
+        // Validação combinada para massa e volume
+        if (isNaN(disponivelMassa) || disponivelMassa <= 0 || isNaN(disponivelVolume) || disponivelVolume <= 0) {
+            availableConcentrationError.textContent = 'Insira valores numéricos válidos para a concentração (maiores que 0).';
             temErro = true;
         }
+
         if (!forma) {
             formError.textContent = 'Selecione a forma farmacêutica.';
             temErro = true;
@@ -247,12 +257,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const disponivelUnidade = concentracaoParaUnidade[disponivelUnidadeConcentracao];
-
         const { resultado, sucesso, prescricaoMg } = sistema.calcularDosagem(
             prescricaoValor,
             prescricaoUnidade,
-            disponivelValor,
+            disponivelMassa,
+            disponivelMassaUnidade,
+            disponivelVolume,
+            disponivelVolumeUnidade,
             forma,
             medicamento
         );
@@ -266,8 +277,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 medicamento,
                 prescricaoValor,
                 prescricaoUnidade,
-                disponivelValor,
-                disponivelUnidadeConcentracao,
+                disponivelMassa,
+                disponivelMassaUnidade,
+                disponivelVolume,
+                disponivelVolumeUnidade,
                 forma,
                 resultado,
                 alerta.mensagem
