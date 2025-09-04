@@ -177,6 +177,7 @@ body {
     border-radius: 10px;
     font-size: 0.95rem;
     transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%; /* Permite que o select ocupe a largura total */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -193,18 +194,18 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
+/* Ajuste para o campo de Dosagem Prescrita */
 .input-with-units input {
-    flex-grow: 2;
+    flex-grow: 2; /* Permite que o input de dosagem cresça mais */
     flex-basis: 0;
-    margin-right: 0;
 }
 
 .unit-group {
     position: relative;
-    flex-grow: 1;
+    flex-grow: 1; /* Permite que o grupo de unidade cresça */
     flex-basis: 0;
     min-width: 80px;
 }
@@ -351,6 +352,40 @@ body {
     font-weight: 600;
     margin-top: 5px;
     min-height: 1.2em;
+}
+
+/* Estilos para a nova estrutura de concentração */
+.concentration-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+.concentration-group .input-with-units {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-grow: 1; /* Permite que cada conjunto de massa/volume cresça */
+}
+
+/* Inputs e selects dentro do grupo de concentração */
+.concentration-group .input-with-units input {
+    flex-grow: 2; /* Cresce mais do que a unidade */
+    flex-basis: 0;
+    text-align: left;
+}
+
+.concentration-group .unit-group {
+    flex-grow: 1; /* Permite que a unidade cresça */
+    flex-basis: 0;
+    min-width: 80px;
+}
+
+.concentration-separator {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
 }
 
 /* Estilos dos itens do histórico */
@@ -532,6 +567,9 @@ body {
         margin-top: 15px;
     }
     .safety-alert-box #safety-alert-message { font-size: 0.9rem; }
+    .concentration-group {
+        flex-wrap: wrap;
+    }
 }
 
 /* Estilos para telas pequenas (smartphones) */
@@ -570,4 +608,32 @@ body {
     }
     .history-item-details strong { font-size: 0.85rem; }
     .history-item .delete-btn { font-size: 1rem; }
+
+    /* Ajustes para a concentração em telas pequenas */
+    .concentration-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .concentration-group .input-with-units {
+        width: 100%;
+        gap: 8px; /* Ajusta o espaçamento para telas pequenas */
+    }
+
+    .concentration-group .input-with-units input {
+        max-width: none;
+        flex-grow: 2;
+    }
+
+    .concentration-group .unit-group {
+        width: auto;
+        min-width: 60px;
+        flex-grow: 1;
+    }
+
+    .concentration-separator {
+        font-size: 1rem;
+        margin: 0 2px;
+    }
 }
