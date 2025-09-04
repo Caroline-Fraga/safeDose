@@ -57,14 +57,26 @@
 
                 <div class="form-group">
                     <label>Concentração Disponível</label>
-                    <div class="input-with-units">
-                        <input type="text" id="available-concentration" placeholder="0" autocomplete="off">
-                        <div class="unit-group">
-                            <select id="available-unit">
-                                <option value="mg/ml">mg/ml</option>
-                                <option value="mcg/ml">mcg/ml</option>
-                                <option value="g/ml">g/ml</option>
-                            </select>
+                    <div class="concentration-group">
+                        <div class="input-with-units">
+                            <input type="text" id="available-mass" placeholder="0" autocomplete="off">
+                            <div class="unit-group">
+                                <select id="available-mass-unit">
+                                    <option value="mg">mg</option>
+                                    <option value="mcg">mcg</option>
+                                    <option value="g">g</option>
+                                </select>
+                            </div>
+                        </div>
+                        <span class="concentration-separator">/</span>
+                        <div class="input-with-units">
+                            <input type="text" id="available-volume" placeholder="0" autocomplete="off">
+                            <div class="unit-group">
+                                <select id="available-volume-unit">
+                                    <option value="ml">ml</option>
+                                    <option value="L">L</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <span class="error-message" id="available-concentration-error-message"></span>
